@@ -47,6 +47,7 @@ async function fName()
         ])
 
         //type password
+        await page.waitForTimeout(2000);
         await page.waitForSelector('[type="password"]');
         await new Promise(function (resolve,reject){setTimeout(async function()
         {
@@ -57,11 +58,13 @@ async function fName()
         
 
             //show password
+            await page.waitForTimeout(1000);
             await page.waitForSelector('.VfPpkd-MPu53c.VfPpkd-MPu53c-OWXEXe-dgl2Hf.Ne8lhe.swXlm.az2ine.y5MMGc.sD2Hod.VfPpkd-MPu53c-OWXEXe-mWPk3d');
             await page.click(".VfPpkd-MPu53c.VfPpkd-MPu53c-OWXEXe-dgl2Hf.Ne8lhe.swXlm.az2ine.y5MMGc.sD2Hod.VfPpkd-MPu53c-OWXEXe-mWPk3d");
 
 
         // click on next button
+        await page.waitForTimeout(1000);
         await page.waitForSelector(".VfPpkd-dgl2Hf-ppHlrf-sM5MNb .VfPpkd-RLmnJb");
         await Promise.all([
             page.waitForNavigation(),
@@ -69,6 +72,7 @@ async function fName()
         ])
 
         // typing the song name on the search 
+        await page.waitForTimeout(2000);
         await page.waitForSelector(".style-scope.ytd-searchbox  #search-input.ytd-searchbox-spt");
         await page.click(".style-scope.ytd-searchbox  #search-input.ytd-searchbox-spt");
         let p = new Promise(function (resolve,reject)
@@ -83,6 +87,7 @@ async function fName()
             
         
         // then click on the search box option
+
         await page.waitForSelector("#search-icon-legacy.style-scope.ytd-searchbox");
         await Promise.all([
             page.waitForNavigation(),
@@ -132,7 +137,6 @@ async function fName()
             await handleSongAdded(i);
         }
          
-        console.log("started");
         await  playThePlaylist();
         console.log("finished");
     }
@@ -176,6 +180,7 @@ function handleSongAdded(i)
 
 
               //clear the old name written
+              await page.waitForTimeout(2000);
             for(let j=0;j<(songName[i-1]+" audio").length;j++)
             {
                 await page.keyboard.press("Backspace");
@@ -192,6 +197,7 @@ function handleSongAdded(i)
             
             
             // click on search
+            await page.waitForTimeout(1000);
             await page.waitForSelector("#search-icon-legacy.style-scope.ytd-searchbox");
             await Promise.all([
                 page.waitForNavigation(),
@@ -211,6 +217,7 @@ function handleSongAdded(i)
            await add;
 
             //now we have to check the save option
+            await page.waitForTimeout(1000);
             await page.evaluate(function ()
             {
                 let a = document.querySelectorAll(".style-scope.ytd-menu-renderer.force-icon-button.style-default.size-default .style-scope.ytd-button-renderer.style-default.size-default");
@@ -268,7 +275,7 @@ function playThePlaylist()
             })
 
             // click on sort
-            await page.waitForTimeout(".dropdown-trigger.style-scope.yt-dropdown-menu");
+            await page.waitForTimeout(1000);
             await page.waitForSelector(".dropdown-trigger.style-scope.yt-dropdown-menu");
             await page.click(".dropdown-trigger.style-scope.yt-dropdown-menu");
 

@@ -8,4 +8,4 @@
 
 
 * To run the code 
-    * *node i puppeteer*
+    * *npm i puppeteer*
