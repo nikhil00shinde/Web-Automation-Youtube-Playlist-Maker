@@ -5,3 +5,7 @@
   * First, we sign in the Youtube account.
   * Then one by one song will be added in the created playlist
   * then we will go to that playlist and play the song.
+
+
+* To run the code 
+    * *node i puppeteer*
