@@ -1,15 +1,32 @@
+const { resolve } = require("path");
 const pup = require("puppeteer");
+const readline = require("readline");
+const chalk = require("chalk");
+
 
 let page;
 let browser;
-let playList = "MyFavSong!!";
-let songName = ["Aayat","Laal Ishq","Agar tum sath ho","Ek din ek jaan"];
+let playList ;
+let songName = [];
+let email = "ridirin378@d4wan.com";
+let pass = "123456AB";
+
+getEmailPass()
+.then(function()
+{
+    return takingInput();
+})
+.then(function ()
+{
+    fName();
+})
+
+
 async function fName()
 {
     try
     {
-    let email = "ridirin378@d4wan.com";
-    let pass = "123456AB";
+    
     browser = await pup.launch({
             headless:false,
             slowMo:50,
@@ -47,8 +64,7 @@ async function fName()
         ])
 
         //type password
-        await page.waitForTimeout(2000);
-        await page.waitForSelector('[type="password"]');
+        await page.waitForSelector('[type="password"]',{visible:true});
         await new Promise(function (resolve,reject){setTimeout(async function()
         {
             await page.type('[type="password"]',pass);
@@ -59,27 +75,25 @@ async function fName()
 
             //show password
             await page.waitForTimeout(1000);
-            await page.waitForSelector('.VfPpkd-MPu53c.VfPpkd-MPu53c-OWXEXe-dgl2Hf.Ne8lhe.swXlm.az2ine.y5MMGc.sD2Hod.VfPpkd-MPu53c-OWXEXe-mWPk3d');
+            await page.waitForSelector('.VfPpkd-MPu53c.VfPpkd-MPu53c-OWXEXe-dgl2Hf.Ne8lhe.swXlm.az2ine.y5MMGc.sD2Hod.VfPpkd-MPu53c-OWXEXe-mWPk3d',{visible:true});
             await page.click(".VfPpkd-MPu53c.VfPpkd-MPu53c-OWXEXe-dgl2Hf.Ne8lhe.swXlm.az2ine.y5MMGc.sD2Hod.VfPpkd-MPu53c-OWXEXe-mWPk3d");
 
 
         // click on next button
-        await page.waitForTimeout(1000);
-        await page.waitForSelector(".VfPpkd-dgl2Hf-ppHlrf-sM5MNb .VfPpkd-RLmnJb");
+        await page.waitForSelector(".VfPpkd-dgl2Hf-ppHlrf-sM5MNb .VfPpkd-RLmnJb",{visible:true});
         await Promise.all([
             page.waitForNavigation(),
             page.click(".VfPpkd-dgl2Hf-ppHlrf-sM5MNb .VfPpkd-RLmnJb")
         ])
 
         // typing the song name on the search 
-        await page.waitForTimeout(2000);
-        await page.waitForSelector(".style-scope.ytd-searchbox  #search-input.ytd-searchbox-spt");
+        await page.waitForSelector(".style-scope.ytd-searchbox  #search-input.ytd-searchbox-spt",{visible:true});
         await page.click(".style-scope.ytd-searchbox  #search-input.ytd-searchbox-spt");
         let p = new Promise(function (resolve,reject)
         {
             setTimeout(async function()
             {
-                await page.type(".style-scope ytd-searchbox  #search-input.ytd-searchbox-spt",songName[0]+" audio");
+                await page.type(".style-scope ytd-searchbox  #search-input.ytd-searchbox-spt",songName[0]);
                 resolve();
             },1000);
         })
@@ -87,15 +101,16 @@ async function fName()
             
         
         // then click on the search box option
-
-        await page.waitForSelector("#search-icon-legacy.style-scope.ytd-searchbox");
+        await page.waitForTimeout(2000);
+        await page.waitForSelector("#search-icon-legacy.style-scope.ytd-searchbox",{visible:true});
         await Promise.all([
             page.waitForNavigation(),
             page.click("#search-icon-legacy.style-scope.ytd-searchbox"),
         ])
             
             // clicking on the song 
-        await page.waitForSelector(".style-scope.ytd-video-renderer .style-scope.ytd-video-renderer");
+            await page.waitForTimeout(2000);
+        await page.waitForSelector(".style-scope.ytd-video-renderer .style-scope.ytd-video-renderer",{visible:true});
         await Promise.all([
             page.waitForNavigation(),
             page.click(".style-scope.ytd-video-renderer .style-scope.ytd-video-renderer"),
@@ -108,8 +123,8 @@ async function fName()
         //now we have to check the save option for
          await page.evaluate( function ()
         {
-            let a = document.querySelectorAll(".style-scope.ytd-menu-renderer.force-icon-button.style-default.size-default .style-scope.ytd-button-renderer.style-default.size-default");
-            a[14].click();
+            let a = document.querySelectorAll('#button[aria-label="Save to playlist"] .style-scope.ytd-button-renderer');
+            a[1].click();
         })
          
         //click on create playlist
@@ -138,7 +153,8 @@ async function fName()
         }
          
         await  playThePlaylist();
-        console.log("finished");
+        console.log("\n");
+        console.log(chalk.blue.bgRed.bold("Playlist has been created!!!"))
     }
     catch(err)
     {
@@ -175,13 +191,13 @@ function handleSongAdded(i)
         try{
            
             await page.waitForTimeout(2000);
-            await page.waitForSelector(".style-scope.ytd-searchbox  #search-input.ytd-searchbox-spt");
+            await page.waitForSelector(".style-scope.ytd-searchbox  #search-input.ytd-searchbox-spt",{visible:true});
             await page.click(".style-scope.ytd-searchbox  #search-input.ytd-searchbox-spt");
 
 
               //clear the old name written
               await page.waitForTimeout(2000);
-            for(let j=0;j<(songName[i-1]+" audio").length;j++)
+            for(let j=0;j<(songName[i-1]).length;j++)
             {
                 await page.keyboard.press("Backspace");
             }
@@ -189,7 +205,7 @@ function handleSongAdded(i)
             {
                 setTimeout(async function()
                 {
-                    await page.type(".style-scope ytd-searchbox  #search-input.ytd-searchbox-spt",songName[i]+" audio");
+                    await page.type(".style-scope ytd-searchbox  #search-input.ytd-searchbox-spt",songName[i]);
                     resolve();
                 },1000);
             })
@@ -198,7 +214,7 @@ function handleSongAdded(i)
             
             // click on search
             await page.waitForTimeout(1000);
-            await page.waitForSelector("#search-icon-legacy.style-scope.ytd-searchbox");
+            await page.waitForSelector("#search-icon-legacy.style-scope.ytd-searchbox",{visible:true});
             await Promise.all([
                 page.waitForNavigation(),
                 page.click("#search-icon-legacy.style-scope.ytd-searchbox"),
@@ -206,7 +222,7 @@ function handleSongAdded(i)
             
             // click on the song
             await page.waitForTimeout(2000);
-            await page.waitForSelector(".style-scope.ytd-video-renderer .style-scope.ytd-video-renderer");
+            await page.waitForSelector(".style-scope.ytd-video-renderer .style-scope.ytd-video-renderer",{visible:true});
             await Promise.all([
                 page.waitForNavigation(),
                 page.click(".style-scope.ytd-video-renderer .style-scope.ytd-video-renderer"),
@@ -220,8 +236,8 @@ function handleSongAdded(i)
             await page.waitForTimeout(1000);
             await page.evaluate(function ()
             {
-                let a = document.querySelectorAll(".style-scope.ytd-menu-renderer.force-icon-button.style-default.size-default .style-scope.ytd-button-renderer.style-default.size-default");
-                a[14].click();
+                let a = document.querySelectorAll('#button[aria-label="Save to playlist"] .style-scope.ytd-button-renderer');
+                a[1].click();
             })
          
          
@@ -300,4 +316,60 @@ function playThePlaylist()
         }   
     })
 }
-fName();
+function takingInput()
+{
+    return new Promise(function (resolve,reject)
+    {
+          let rl = readline.createInterface({
+              input : process.stdin,
+              output : process.stdout,
+              prompt : chalk.redBright("EnterSongName->>  ")
+          })
+
+          rl.question(chalk.yellowBright.bold("Enter the name of the playlist: "), function (answer)
+          {
+              playList = answer;
+              console.log("\n");
+              rl.prompt();
+          })
+
+          rl.on("line",function (input)
+          {
+              if(input == "close")
+              {
+                  rl.close();
+                  resolve();
+              }
+              else{
+                songName.push(input); 
+                rl.prompt();
+              }
+              
+          })
+
+    })
+}
+function getEmailPass()
+{
+    return new Promise(function (resolve,reject)
+    {
+        let rl = readline.createInterface({
+            input : process.stdin,
+            output : process.stdout,
+        })
+    
+        rl.question(chalk.magentaBright.bold("Enter your email: "),function(answer)
+        {
+            email = answer;
+            rl.question(chalk.blueBright("Enter your Password: "),function(answer)
+            {
+                pass = answer;
+                console.log("\n");
+                rl.close();
+                resolve();
+            })
+        })
+    
+      
+    })
+}
