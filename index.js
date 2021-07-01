@@ -8,8 +8,8 @@ let page;
 let browser;
 let playList ;
 let songName = [];
-let email = "ridirin378@d4wan.com";
-let pass = "123456AB";
+let email;
+let pass;
 
 getEmailPass()
 .then(function()
